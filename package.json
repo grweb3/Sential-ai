@@ -1,0 +1,21 @@
+{
+  "name": "sential-ai",
+  "version": "1.0.0",
+  "description": "AI security assistant that writes and audits smart contracts.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grweb3/Sential-ai.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/grweb3/Sential-ai/issues"
+  },
+  "homepage": "https://github.com/grweb3/Sential-ai#readme"
+}
