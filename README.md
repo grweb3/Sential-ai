@@ -9,7 +9,7 @@
 </p>
 
 <p>
-<a href="https://www.google.com/search?q=https://sential-ai.onrender.com">Live Demo</a> •
+<a href="https://www.google.com/search?q=[https://sential-ai.onrender.com]">Live Demo</a> •
 <a href="#-installation">Installation</a> •
 <a href="#-api-reference">API Docs</a> •
 <a href="#-features">Features</a>
