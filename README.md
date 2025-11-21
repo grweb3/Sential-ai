@@ -1,5 +1,3 @@
-# Sential-ai
-AI security assistant that writes and audits smart contracts.
 <div align="center">
 <!-- Replace with your actual logo URL if hosted, or relative path -->
 <img src="frontend/logo.png" alt="Sential AI Logo" width="120" height="120" />
