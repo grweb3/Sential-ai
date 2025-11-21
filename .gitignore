@@ -137,3 +137,18 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment Variables (SECRETS)
+.env
+.env.local
+
+# System Files
+.DS_Store
+thumbs.db
+
+node_modules/
+.env

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sential AI | Smart Contract Security</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        bg: '#0E1217',
+                        surface: '#1C1F26',
+                        primary: '#3B82F6',
+                        accent: '#60A5FA',
+                        border: '#2D3748',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0E1217;
+            color: #E2E8F0;
+        }
+
+        .glass-panel {
+            background: rgba(28, 31, 38, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0E1217;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2D3748;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4A5568;
+        }
+
+        /* Markdown Styles */
+        .prose h2 {
+            color: #60A5FA;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            border-bottom: 1px solid #2D3748;
+            padding-bottom: 0.5rem;
+        }
+
+        .prose h3 {
+            color: #E2E8F0;
+            font-size: 1.2rem;
+            margin-top: 1em;
+            font-weight: 600;
+        }
+
+        .prose p {
+            color: #94A3B8;
+            line-height: 1.7;
+            margin-bottom: 1em;
+        }
+
+        .prose ul {
+            list-style-type: disc;
+            padding-left: 1.5em;
+            color: #94A3B8;
+            margin-bottom: 1em;
+        }
+
+        .prose strong {
+            color: #F8FAFC;
+            font-weight: 600;
+        }
+
+        .prose code {
+            background: #2D3748;
+            color: #F8FAFC;
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+        }
+
+        .prose pre {
+            background: #111827;
+            padding: 1em;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 1.5em;
+            border: 1px solid #374151;
+        }
+
+        .prose pre code {
+            background: transparent;
+            padding: 0;
+            color: #E2E8F0;
+        }
+    </style>
+</head>
+
+<body class="antialiased min-h-screen flex flex-col">
+
+    <nav class="w-full border-b border-border bg-bg/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div
+                    class="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center text-white font-bold font-display">
+                    S</div>
+                <span class="font-display font-bold text-xl tracking-tight">Sential<span
+                        class="text-primary">.ai</span></span>
+            </div>
+            <div class="flex items-center gap-6 text-sm font-medium text-gray-400">
+                <a href="#" class="hover:text-white transition-colors">Documentation</a>
+                <a href="#" class="hover:text-white transition-colors">API</a>
+                <a href="https://github.com/yourusername" target="_blank"
+                    class="text-white bg-surface border border-border px-4 py-2 rounded-md hover:border-primary transition-all">View
+                    on GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-5xl mx-auto px-6 py-12 w-full">
+
+        <div class="text-center mb-12">
+            <h1
+                class="font-display font-bold text-5xl md:text-6xl mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+                Secure Your Smart Contracts
+            </h1>
+            <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+                The essential pre-flight check for Web3 developers. Paste your Solidity code below for an instant
+                AI-powered security audit.
+            </p>
+        </div>
+
+        <div class="glass-panel rounded-xl p-1 border border-border shadow-2xl shadow-primary/10">
+            <div class="bg-[#0B0E11] rounded-lg p-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-mono text-gray-500 uppercase tracking-wider">Input Code</span>
+                    <label
+                        class="cursor-pointer text-xs text-primary hover:text-white transition-colors flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                        Upload .sol File
+                        <input type="file" id="fileInput" accept=".sol" class="hidden">
+                    </label>
+                </div>
+                <textarea id="codeInput"
+                    class="w-full h-96 bg-transparent text-gray-300 font-mono text-sm focus:outline-none resize-none placeholder-gray-700 leading-relaxed"
+                    placeholder="// Paste your Solidity smart contract code here...
+pragma solidity ^0.8.0;
+
+contract Example {
+    ...
+}" spellcheck="false"></textarea>
+            </div>
+        </div>
+
+        <div class="flex justify-center mt-8">
+            <button onclick="analyzeContract()" id="auditBtn"
+                class="group relative px-8 py-4 bg-primary hover:bg-blue-600 text-white font-bold rounded-lg font-display transition-all shadow-lg shadow-blue-500/25 disabled:opacity-50 disabled:cursor-not-allowed">
+                <span class="flex items-center gap-2">
+                    <span id="btnText">Run Sential Audit</span>
+                    <svg id="btnIcon" xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </span>
+                <div id="loader" class="hidden absolute inset-0 flex items-center justify-center">
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                </div>
+            </button>
+        </div>
+
+        <div id="resultsSection" class="hidden mt-16 animate-fade-in-up">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="h-px bg-border flex-1"></div>
+                <h2 class="font-display font-bold text-2xl text-white">Audit Report</h2>
+                <div class="h-px bg-border flex-1"></div>
+            </div>
+
+            <div class="glass-panel rounded-xl p-8 border border-border">
+                <div class="prose max-w-none" id="markdownOutput">
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="border-t border-border mt-12 py-8 text-center text-gray-500 text-sm">
+        <p>© 2025 BlockVIA. Powered by Sential AI.</p>
+    </footer>
+
+    <script>
+        const API_URL = "http://localhost:5000/api/analyze"; // Local backend URL
+
+        // File Upload Handler
+        document.getElementById('fileInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('codeInput').value = e.target.result;
+            };
+            reader.readAsText(file);
+        });
+
+        // Main Audit Function
+        async function analyzeContract() {
+            const code = document.getElementById('codeInput').value;
+            const btn = document.getElementById('auditBtn');
+            const btnText = document.getElementById('btnText');
+            const btnIcon = document.getElementById('btnIcon');
+            const loader = document.getElementById('loader');
+            const results = document.getElementById('resultsSection');
+            const output = document.getElementById('markdownOutput');
+
+            if (!code.trim()) {
+                alert("Please enter some Solidity code first.");
+                return;
+            }
+
+            // Set Loading State
+            btn.disabled = true;
+            btnText.classList.add('opacity-0');
+            btnIcon.classList.add('opacity-0');
+            loader.classList.remove('hidden');
+            results.classList.add('hidden');
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contractCode: code })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Render Markdown Result
+                    output.innerHTML = marked.parse(data.analysis);
+                    results.classList.remove('hidden');
+                    // Scroll to results
+                    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                    alert("Audit Failed: " + data.error);
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert("Connection Error. Ensure Backend is running on port 5000.");
+            } finally {
+                // Reset Button State
+                btn.disabled = false;
+                btnText.classList.remove('opacity-0');
+                btnIcon.classList.remove('opacity-0');
+                loader.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+
+</html>
