@@ -82,7 +82,7 @@ Follow these steps to run Sential AI on your local machine.
 
 1. Clone the Repository
 
-git clone [https://github.com/YOUR_USERNAME/blockvia-sential.git](https://github.com/YOUR_USERNAME/blockvia-sential.git)
+git clone [https://github.com/grweb3/sential-ai.git](https://github.com/YOUR_USERNAME/blockvia-sential.git)
 cd blockvia-sential
 
 
@@ -195,6 +195,6 @@ Open a Pull Request.
 Distributed under the MIT License. See LICENSE for more information.
 
 <div align="center">
-<p>Built with ❤️ by <a href="https://www.google.com/search?q=https://blockvia.com">BlockVIA</a></p>
+<p>Built with ❤️ by <a href="https://www.google.com/search?q=https://blockvia.xyz">BlockVIA</a></p>
 <p><em>"Redefining trust in blockchain."</em></p>
 </div>
