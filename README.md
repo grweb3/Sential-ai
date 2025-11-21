@@ -9,16 +9,16 @@
 </p>
 
 <p>
-<a href="https://www.google.com/search?q=[https://sential-ai.onrender.com]">Live Demo</a> •
+<a href="https://sential-ai.onrender.com">Live Demo</a> •
 <a href="#-installation">Installation</a> •
 <a href="#-api-reference">API Docs</a> •
 <a href="#-features">Features</a>
 </p>
 
 <p>
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/status-active-success.svg" alt="Status" />
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/license-MIT-blue.svg" alt="License" />
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/node-%253E%253D%252018.0.0-brightgreen" alt="Node Version" />
+<img src="https://img.shields.io/badge/status-active-success.svg" alt="Status" />
+<img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" />
+<img src="https://img.shields.io/badge/node-%253E%253D%252018.0.0-brightgreen" alt="Node Version" />
 </p>
 </div>
 
@@ -82,7 +82,7 @@ Follow these steps to run Sential AI on your local machine.
 
 1. Clone the Repository
 
-git clone [https://github.com/grweb3/sential-ai.git](https://github.com/YOUR_USERNAME/blockvia-sential.git)
+git clone [https://github.com/grweb3/sential-ai.git](https://github.com/grweb3/sential-ai.git)
 cd blockvia-sential
 
 
