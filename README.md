@@ -158,23 +158,6 @@ The frontend never sees the API key.
 
 Rate limiting is handled via the backend.
 
-📂 Project Structure
-
-blockvia-sential/
-├── backend/
-│   ├── ai/
-│   │   └── analyze.js       # AI Integration Logic
-│   ├── index.js             # Main Server Entry Point
-│   └── node_modules/
-├── frontend/
-│   ├── index.html           # Main UI (Tailwind + JS)
-│   ├── logo.png             # Branding Assets
-│   └── hero-bg.mp4          # Background Video
-├── .env                     # Secrets (Not committed)
-├── .gitignore               # Git Exclusion Rules
-├── package.json             # Dependencies
-└── README.md                # Documentation
-
 
 🤝 Contributing
 
@@ -195,6 +178,6 @@ Open a Pull Request.
 Distributed under the MIT License. See LICENSE for more information.
 
 <div align="center">
-<p>Built with ❤️ by <a href="https://www.google.com/search?q=https://blockvia.xyz">BlockVIA</a></p>
+<p>Built with ❤️ by <a href="https://blockvia.xyz">BlockVIA</a></p>
 <p><em>"Redefining trust in blockchain."</em></p>
 </div>
