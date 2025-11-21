@@ -27,21 +27,15 @@
                         mono: ['JetBrains Mono', 'monospace'],
                     },
                     colors: {
-                        bg: '#0A100D', // Deep Black from palette
-                        surface: '#161b19', // Slightly lighter black
-                        primary: '#6C63FF', // Purple
-                        secondary: '#00D4FF', // Cyan
-                        textMain: '#F1FAEE', // Off-white
-                        textMuted: '#69747C', // Grey
-                        critical: '#FF4B4B',
-                        high: '#FF8C00',
-                        medium: '#FFD700',
-                        safe: '#00D4FF',
-                        success: '#10B981'
+                        bg: '#0A100D',
+                        surface: '#161b19',
+                        primary: '#6C63FF',
+                        secondary: '#00D4FF',
+                        textMain: '#F1FAEE',
+                        textMuted: '#69747C',
                     },
                     backgroundImage: {
                         'gradient-main': 'linear-gradient(90deg, #6C63FF 0%, #00D4FF 100%)',
-                        'gradient-card': 'linear-gradient(180deg, rgba(22, 27, 25, 0.8) 0%, rgba(10, 16, 13, 0.9) 100%)',
                     }
                 }
             }
@@ -68,85 +62,60 @@
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* Glowing Text Effect */
-        .glow-text {
-            text-shadow: 0 0 20px rgba(108, 99, 255, 0.6);
-        }
+        .glow-text { text-shadow: 0 0 20px rgba(108, 99, 255, 0.6); }
 
         /* Video Background */
         #bg-video {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 80vh; /* Covers Hero Section */
-            object-fit: cover;
-            z-index: -1;
-            opacity: 0.4;
-            mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+            top: 0; left: 0; width: 100%; height: 85vh;
+            object-fit: cover; z-index: -1; opacity: 0.5;
+            mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+            pointer-events: none;
         }
 
         /* Score Circle */
         .score-circle {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
+            width: 120px; height: 120px; border-radius: 50%;
             background: conic-gradient(var(--score-color) var(--score-percent), #2D3748 0);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+            display: flex; align-items: center; justify-content: center; position: relative;
         }
         .score-circle::before {
-            content: "";
-            width: 100px;
-            height: 100px;
-            background: #0A100D;
-            border-radius: 50%;
-            position: absolute;
+            content: ""; width: 100px; height: 100px;
+            background: #161b19; border-radius: 50%; position: absolute;
         }
         .score-value {
-            position: relative;
-            z-index: 10;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            font-size: 1.5rem;
+            position: relative; z-index: 10;
+            font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.5rem;
         }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col relative">
 
-    <!-- Background Video (User to replace src) -->
-    <!-- Put your video file in the frontend folder and name it 'hero-bg.mp4' -->
+    <!-- Background Video -->
     <video autoplay muted loop playsinline id="bg-video">
-        <source src="hero-bg.mp4" type="video/mp4">
+        <source src="video-bg.mp4" type="video/mp4">
     </video>
 
     <!-- Navbar -->
     <nav class="w-full border-b border-white/10 bg-bg/50 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <!-- Logo -->
             <div class="flex items-center gap-3">
-                <img src="logo.png" alt="Sential Logo" class="h-20 w-auto object-contain" onerror="this.style.display='none'"> 
-                <!-- Fallback text if no logo image -->
-               
+                <img src="logo.png" alt="Sential" class="h-10 w-auto object-contain" onerror="this.style.display='none'"> 
+                <div class="flex flex-col">
+                    <span class="font-display font-bold text-2xl tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">SENTIAL</span>
+                </div>
             </div>
-            
-            <div class="flex items-center gap-8 text-sm font-display uppercase tracking-wider">
-                <a href="https://github.com/grweb3/Sential-ai/blob/main/README.md" class="text-textMuted hover:text-white transition-colors">Documentation</a>
-                <a href="https://github.com/grweb3/Sential-ai" target="_blank" class="flex items-center gap-2 border border-white/20 px-4 py-2 rounded-full hover:border-primary hover:bg-white/5 transition-all">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/></svg>
-                    View GitHub
-                </a>
+            <div class="flex items-center gap-8 text-sm font-display uppercase tracking-wider hidden md:flex">
+                <a href="#" class="text-textMuted hover:text-white transition-colors">Documentation</a>
+                <a href="https://github.com/yourusername" target="_blank" class="flex items-center gap-2 border border-white/20 px-4 py-2 rounded-full hover:border-primary hover:bg-white/5 transition-all">View GitHub</a>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Main Content -->
     <main class="flex-grow w-full max-w-6xl mx-auto px-6 py-16 relative z-10">
         
-        <!-- Title -->
         <div class="text-center mb-16">
             <h1 class="font-display font-bold text-4xl md:text-6xl mb-6 uppercase leading-tight">
                 Secure Your Smart Contracts with <br>
@@ -157,13 +126,10 @@
             </p>
         </div>
 
-        <!-- Code Input Box -->
+        <!-- Code Input -->
         <div class="relative group">
-            <!-- Glowing border effect -->
             <div class="absolute -inset-0.5 bg-gradient-main rounded-xl opacity-50 blur group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
-            
             <div class="relative bg-surface rounded-xl border border-white/10 p-2 shadow-2xl">
-                <!-- Code Header -->
                 <div class="flex justify-between items-center px-4 py-2 border-b border-white/5 bg-black/20 rounded-t-lg">
                     <div class="flex gap-2">
                         <div class="w-3 h-3 rounded-full bg-red-500"></div>
@@ -172,38 +138,18 @@
                     </div>
                     <span class="text-xs font-mono text-textMuted uppercase">INPUT CODE</span>
                     <label class="cursor-pointer text-xs text-secondary hover:text-white transition-colors font-mono flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                         Upload .sol File
                         <input type="file" id="fileInput" accept=".sol" class="hidden">
                     </label>
                 </div>
-
-                <!-- Textarea -->
-                <textarea 
-                    id="codeInput" 
-                    class="w-full h-[400px] bg-[#0d1117] text-gray-300 font-mono text-sm p-6 focus:outline-none resize-none placeholder-gray-700 leading-relaxed rounded-b-lg" 
-                    placeholder="// Paste your Solidity smart contract code here...
-pragma solidity ^0.8.0;
-
-contract Example {
-    ...
-}"
-                    spellcheck="false"
-                ></textarea>
+                <textarea id="codeInput" class="w-full h-[400px] bg-[#0d1117] text-gray-300 font-mono text-sm p-6 focus:outline-none resize-none placeholder-gray-700 leading-relaxed rounded-b-lg" placeholder="// Paste your Solidity smart contract code here..."></textarea>
             </div>
         </div>
 
-        <!-- Action Button -->
+        <!-- Audit Button -->
         <div class="flex justify-center mt-10">
-            <button 
-                onclick="analyzeContract()" 
-                id="auditBtn"
-                class="group relative px-10 py-4 bg-gradient-main text-white font-bold text-lg rounded-lg font-display tracking-wider transition-all shadow-[0_0_20px_rgba(108,99,255,0.5)] hover:shadow-[0_0_30px_rgba(0,212,255,0.6)] hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-            >
-                <span class="flex items-center gap-2">
-                    <span id="btnText">RUN SENTIAL AUDIT</span>
-                </span>
-                <!-- Loader -->
+            <button onclick="analyzeContract()" id="auditBtn" class="group relative px-10 py-4 bg-gradient-main text-white font-bold text-lg rounded-lg font-display tracking-wider transition-all shadow-[0_0_20px_rgba(108,99,255,0.5)] hover:shadow-[0_0_30px_rgba(0,212,255,0.6)] hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
+                <span class="flex items-center gap-2"><span id="btnText">RUN SENTIAL AUDIT</span></span>
                 <div id="loader" class="hidden absolute inset-0 flex items-center justify-center bg-gradient-main rounded-lg">
                     <svg class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -213,43 +159,32 @@ contract Example {
             </button>
         </div>
 
-        <!-- Results Dashboard (Hidden initially) -->
-        <div id="resultsSection" class="hidden mt-24 animate-fade-in">
-            
+        <!-- Results (Hidden) -->
+        <div id="resultsSection" class="hidden mt-24 animate-fade-in pb-20">
             <div class="flex items-center gap-4 mb-10">
                 <div class="w-2 h-8 bg-gradient-main rounded-sm"></div>
                 <h2 class="font-display font-bold text-3xl uppercase">OVERALL ASSESSMENT</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                <!-- Score Card -->
                 <div class="bg-surface border border-white/5 rounded-xl p-8 flex flex-col items-center justify-center shadow-lg">
                     <div class="score-circle mb-4" id="scoreCircle" style="--score-color: #6C63FF; --score-percent: 0%;">
                         <span class="score-value" id="scoreText">0/10</span>
                     </div>
                     <h3 class="font-display text-primary text-xl font-bold">Security Score</h3>
                 </div>
-
-                <!-- Summary Text -->
                 <div class="md:col-span-2 bg-surface border border-white/5 rounded-xl p-8 shadow-lg">
                     <div class="prose prose-invert max-w-none">
-                        <p id="summaryText" class="text-gray-300 leading-relaxed">
-                            AI analysis pending. Run an audit to see the executive summary here.
-                        </p>
+                        <p id="summaryText" class="text-gray-300 leading-relaxed">AI analysis pending.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Expandable Sections (Accordions) -->
-            <div class="space-y-6" id="accordionContainer">
-                <!-- Items will be injected here by JS -->
-            </div>
-
+            <div class="space-y-6" id="accordionContainer"></div>
         </div>
-
     </main>
 
-    <footer class="border-t border-white/5 mt-20 py-10 text-center">
+    <footer class="border-t border-white/5 mt-auto py-10 text-center bg-bg/80 backdrop-blur-sm">
         <div class="flex items-center justify-center gap-2 mb-4 opacity-50">
             <div class="w-6 h-6 bg-gradient-to-br from-primary to-secondary rounded flex items-center justify-center text-black font-bold font-display text-xs">S</div>
             <span class="font-display font-bold text-lg tracking-widest">BLOCKVIA</span>
@@ -258,43 +193,58 @@ contract Example {
     </footer>
 
     <script>
-        // Change this to your deployed URL when live
+        // --- SMART PARSING LOGIC (FIXED) ---
         const API_URL = "/api/analyze"; 
 
         document.getElementById('fileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('codeInput').value = e.target.result;
-            };
+            reader.onload = function(e) { document.getElementById('codeInput').value = e.target.result; };
             reader.readAsText(file);
         });
 
-        // Helper to create an accordion item
-        function createAccordionItem(title, content, type) {
-            const colors = {
-                critical: 'border-red-500/50 shadow-red-900/20 text-red-400',
-                high: 'border-orange-500/50 shadow-orange-900/20 text-orange-400',
-                medium: 'border-yellow-500/50 shadow-yellow-900/20 text-yellow-400',
-                gas: 'border-green-500/50 shadow-green-900/20 text-green-400',
-                best: 'border-blue-500/50 shadow-blue-900/20 text-blue-400'
-            };
+        // 1. Robust Section Extractor
+        // This splits the document by headers (##) and looks for keywords loosely
+        function extractFuzzySection(markdown, keywords) {
+            const sections = markdown.split(/##\s+/); // Split by Markdown headers
+            // Find the section that contains ANY of the keywords (case insensitive)
+            const found = sections.find(s => keywords.some(k => s.toUpperCase().includes(k.toUpperCase())));
             
-            const icons = {
-                critical: '🔴',
-                high: '🟠',
-                medium: '🟡',
-                gas: '💰',
-                best: '✅'
+            // Remove the title line from the section content for cleaner display
+            if (found) {
+                const lines = found.split('\n');
+                lines.shift(); // Remove the first line (which is the title)
+                return lines.join('\n').trim();
+            }
+            
+            return "No specific details returned for this section.";
+        }
+
+        // 2. Robust Score Extractor
+        // Looks for patterns like "8/10", "Score: 7", "10/10" anywhere in the text
+        function extractScore(markdown) {
+            const regex = /(\d{1,2}(\.\d+)?)\s*\/\s*10/; 
+            const match = markdown.match(regex);
+            return match ? parseFloat(match[1]) : 0;
+        }
+
+        function createAccordionItem(title, content, type) {
+            const styles = {
+                critical: { color: 'text-red-400', border: 'hover:border-red-500/30', icon: '🔴' },
+                high: { color: 'text-orange-400', border: 'hover:border-orange-500/30', icon: '🟠' },
+                medium: { color: 'text-yellow-400', border: 'hover:border-yellow-500/30', icon: '🟡' },
+                gas: { color: 'text-green-400', border: 'hover:border-green-500/30', icon: '💰' },
+                best: { color: 'text-blue-400', border: 'hover:border-blue-500/30', icon: '✅' }
             };
+            const s = styles[type];
 
             return `
-                <details class="group bg-surface border border-white/5 rounded-lg overflow-hidden transition-all hover:border-white/20 open:border-${type}-500/30 open:shadow-lg">
+                <details class="group bg-surface border border-white/5 rounded-lg overflow-hidden transition-all ${s.border} open:border-white/20 open:shadow-lg">
                     <summary class="flex items-center justify-between p-6 cursor-pointer select-none bg-white/2 group-hover:bg-white/5 transition-colors">
                         <div class="flex items-center gap-4">
-                            <span class="text-2xl filter drop-shadow-md">${icons[type] || '📄'}</span>
-                            <h3 class="font-display font-bold text-lg tracking-wide uppercase ${colors[type] || 'text-white'} glow-text">${title}</h3>
+                            <span class="text-2xl">${s.icon}</span>
+                            <h3 class="font-display font-bold text-lg tracking-wide uppercase ${s.color} glow-text">${title}</h3>
                         </div>
                         <svg class="w-6 h-6 text-gray-500 transform group-open:rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -309,17 +259,6 @@ contract Example {
             `;
         }
 
-        function extractSection(markdown, header) {
-            const regex = new RegExp(`##\\s*${header}([\\s\\S]*?)(?=##|$)`, 'i');
-            const match = markdown.match(regex);
-            return match ? match[1].trim() : "No issues found in this category.";
-        }
-
-        function extractScore(markdown) {
-            const match = markdown.match(/Score\s*[:\(]?\s*(\d+(\.\d+)?)\s*\/\s*10/i);
-            return match ? parseFloat(match[1]) : 0;
-        }
-
         async function analyzeContract() {
             const code = document.getElementById('codeInput').value;
             const btn = document.getElementById('auditBtn');
@@ -327,12 +266,8 @@ contract Example {
             const results = document.getElementById('resultsSection');
             const container = document.getElementById('accordionContainer');
 
-            if (!code.trim()) {
-                alert("Please enter some Solidity code first.");
-                return;
-            }
+            if (!code.trim()) { alert("Please enter Solidity code."); return; }
 
-            // Loading State
             btn.disabled = true;
             document.getElementById('btnText').classList.add('opacity-0');
             loader.classList.remove('hidden');
@@ -344,40 +279,32 @@ contract Example {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contractCode: code })
                 });
-
                 const data = await response.json();
 
                 if (data.success) {
                     const md = data.analysis;
 
-                    // 1. Parse Sections
-                    const critical = extractSection(md, "CRITICAL VULNERABILITIES") || extractSection(md, "CRITICAL");
-                    const high = extractSection(md, "HIGH SEVERITY ISSUES") || extractSection(md, "HIGH");
-                    const medium = extractSection(md, "MEDIUM/LOW SEVERITY ISSUES") || extractSection(md, "MEDIUM");
-                    const gas = extractSection(md, "GAS OPTIMIZATION OPPORTUNITIES") || extractSection(md, "GAS");
-                    const best = extractSection(md, "SECURITY BEST PRACTICES") || extractSection(md, "BEST PRACTICES");
-                    const summary = extractSection(md, "OVERALL ASSESSMENT") || "Analysis complete.";
+                    // FUZZY EXTRACTION (Case Insensitive & Flexible)
+                    const critical = extractFuzzySection(md, ["CRITICAL", "VULNERABILITIES"]);
+                    const high = extractFuzzySection(md, ["HIGH SEVERITY", "HIGH RISK"]);
+                    const medium = extractFuzzySection(md, ["MEDIUM", "LOW", "WARNING"]);
+                    const gas = extractFuzzySection(md, ["GAS", "OPTIMIZATION"]);
+                    const best = extractFuzzySection(md, ["BEST PRACTICES", "SECURITY BEST"]);
+                    const summary = extractFuzzySection(md, ["OVERALL", "ASSESSMENT", "CONCLUSION"]);
 
-                    // 2. Update Score
+                    // Score Logic
                     const score = extractScore(md);
-                    const scorePercent = (score / 10) * 100;
                     const circle = document.getElementById('scoreCircle');
-                    const scoreText = document.getElementById('scoreText');
                     
-                    // Animate Score
-                    circle.style.setProperty('--score-percent', `${scorePercent}%`);
-                    // Color logic based on score
-                    let color = '#FF4B4B'; // Red
-                    if (score > 5) color = '#FFD700'; // Yellow
-                    if (score > 8) color = '#10B981'; // Green
+                    circle.style.setProperty('--score-percent', `${(score / 10) * 100}%`);
+                    let color = score > 8 ? '#10B981' : (score > 5 ? '#FFD700' : '#FF4B4B');
                     circle.style.setProperty('--score-color', color);
-                    scoreText.innerText = `${score}/10`;
+                    document.getElementById('scoreText').innerText = `${score}/10`;
 
-                    // 3. Update Summary Text
-                    // Remove the "Score: x/10" line from summary if present to avoid duplication
-                    document.getElementById('summaryText').innerHTML = marked.parse(summary.replace(/Score\s*[:\(]?\s*\d+(\.\d+)?\s*\/\s*10/i, ''));
-
-                    // 4. Build Accordions
+                    // Summary Injection
+                    document.getElementById('summaryText').innerHTML = marked.parse(summary);
+                    
+                    // Accordion Injection
                     container.innerHTML = 
                         createAccordionItem("CRITICAL VULNERABILITIES", critical, 'critical') +
                         createAccordionItem("HIGH SEVERITY ISSUES", high, 'high') +
@@ -386,19 +313,13 @@ contract Example {
                         createAccordionItem("BEST PRACTICES", best, 'best');
 
                     results.classList.remove('hidden');
-                    
-                    // Smooth Scroll
-                    setTimeout(() => {
-                        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 100);
-
+                    setTimeout(() => results.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
                 } else {
                     alert("Audit Failed: " + data.error);
                 }
-
             } catch (error) {
                 console.error(error);
-                alert("Connection Error. Check console for details.");
+                alert("Connection Error. Ensure Backend is running.");
             } finally {
                 btn.disabled = false;
                 document.getElementById('btnText').classList.remove('opacity-0');
