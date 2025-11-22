@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sential AI | Smart Contract Security</title>
     
-    <!-- Fonts: Orbitron & Open Sans & JetBrains Mono -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Open+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Markdown Parser -->
+    <!-- Marked.js -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <!-- Tailwind Config -->
@@ -64,7 +64,6 @@
 
         .glow-text { text-shadow: 0 0 20px rgba(108, 99, 255, 0.6); }
 
-        /* Video Background */
         #bg-video {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 85vh;
@@ -112,7 +111,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="flex-grow w-full max-w-6xl mx-auto px-6 py-16 relative z-10">
+   <main class="flex-grow w-full max-w-6xl mx-auto px-6 py-16 relative z-10">
         
         <div class="text-center mb-16">
             <h1 class="font-display font-bold text-4xl md:text-6xl mb-6 uppercase leading-tight">
@@ -187,13 +186,14 @@
             <div class="w-6 h-6 bg-gradient-to-br from-primary to-secondary rounded flex items-center justify-center text-black font-bold font-display text-xs">S</div>
             <span class="font-display font-bold text-lg tracking-widest">BLOCKVIA</span>
         </div>
-        <p class="text-textMuted text-sm">© 2025 Sential AI. Powered by BlockVIA</p>
+        <p class="text-textMuted text-sm">© 2025 BlockVIA. Powered by Sential AI.</p>
     </footer>
 
     <script>
-        // --- SMART PARSING LOGIC (FIXED) ---
+        // LIVE PRODUCTION URL
         const API_URL = "/api/analyze"; 
 
+        // File Upload Handler
         document.getElementById('fileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -202,32 +202,25 @@
             reader.readAsText(file);
         });
 
-        // 1. Robust Section Extractor
-        // This splits the document by headers (##) and looks for keywords loosely
-        function extractFuzzySection(markdown, keywords) {
-            const sections = markdown.split(/##\s+/); // Split by Markdown headers
-            // Find the section that contains ANY of the keywords (case insensitive)
-            const found = sections.find(s => keywords.some(k => s.toUpperCase().includes(k.toUpperCase())));
+        // 1. JSON List to HTML Converter
+        // Takes an array of objects and turns them into styled HTML blocks
+        function parseListToHTML(list) {
+            if (!list || list.length === 0) return "No issues found in this category. ✅";
             
-            // Remove the title line from the section content for cleaner display
-            if (found) {
-                const lines = found.split('\n');
-                lines.shift(); // Remove the first line (which is the title)
-                return lines.join('\n').trim();
-            }
-            
-            return "No specific details returned for this section.";
+            return list.map(item => `
+                <div class="mb-4 border-b border-white/10 pb-2 last:border-0">
+                    <h4 class="font-bold text-white text-lg mb-1">${item.title}</h4>
+                    <p class="text-sm text-gray-300 leading-relaxed">${item.description}</p>
+                    <div class="mt-3 p-3 bg-black/40 rounded border border-white/10">
+                        <span class="text-xs font-mono text-primary uppercase tracking-wider">Recommendation:</span>
+                        <p class="text-sm text-gray-400 mt-1 font-mono">${item.recommendation}</p>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        // 2. Robust Score Extractor
-        // Looks for patterns like "8/10", "Score: 7", "10/10" anywhere in the text
-        function extractScore(markdown) {
-            const regex = /(\d{1,2}(\.\d+)?)\s*\/\s*10/; 
-            const match = markdown.match(regex);
-            return match ? parseFloat(match[1]) : 0;
-        }
-
-        function createAccordionItem(title, content, type) {
+        // 2. Accordion Creator
+        function createAccordionItem(title, contentHTML, type) {
             const styles = {
                 critical: { color: 'text-red-400', border: 'hover:border-red-500/30', icon: '🔴' },
                 high: { color: 'text-orange-400', border: 'hover:border-orange-500/30', icon: '🟠' },
@@ -249,8 +242,8 @@
                         </svg>
                     </summary>
                     <div class="p-6 pt-0 border-t border-white/5 bg-black/20">
-                        <div class="prose prose-invert max-w-none mt-4 font-light text-gray-300">
-                            ${marked.parse(content)}
+                        <div class="mt-4 font-light text-gray-300">
+                            ${contentHTML}
                         </div>
                     </div>
                 </details>
@@ -266,6 +259,7 @@
 
             if (!code.trim()) { alert("Please enter Solidity code."); return; }
 
+            // Set Loading State
             btn.disabled = true;
             document.getElementById('btnText').classList.add('opacity-0');
             loader.classList.remove('hidden');
@@ -280,18 +274,11 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    const md = data.analysis;
+                    // IMPORTANT: This relies on the Backend returning structured JSON now
+                    const report = data.analysis.auditReport;
 
-                    // FUZZY EXTRACTION (Case Insensitive & Flexible)
-                    const critical = extractFuzzySection(md, ["CRITICAL", "VULNERABILITIES"]);
-                    const high = extractFuzzySection(md, ["HIGH SEVERITY", "HIGH RISK"]);
-                    const medium = extractFuzzySection(md, ["MEDIUM", "LOW", "WARNING"]);
-                    const gas = extractFuzzySection(md, ["GAS", "OPTIMIZATION"]);
-                    const best = extractFuzzySection(md, ["BEST PRACTICES", "SECURITY BEST"]);
-                    const summary = extractFuzzySection(md, ["OVERALL", "ASSESSMENT", "CONCLUSION"]);
-
-                    // Score Logic
-                    const score = extractScore(md);
+                    // 1. Score Logic
+                    const score = report.score || 0;
                     const circle = document.getElementById('scoreCircle');
                     
                     circle.style.setProperty('--score-percent', `${(score / 10) * 100}%`);
@@ -299,16 +286,16 @@
                     circle.style.setProperty('--score-color', color);
                     document.getElementById('scoreText').innerText = `${score}/10`;
 
-                    // Summary Injection
-                    document.getElementById('summaryText').innerHTML = marked.parse(summary);
+                    // 2. Summary Injection
+                    document.getElementById('summaryText').innerHTML = report.summary;
                     
-                    // Accordion Injection
+                    // 3. Accordion Injection (Using the new JSON Parser)
                     container.innerHTML = 
-                        createAccordionItem("CRITICAL VULNERABILITIES", critical, 'critical') +
-                        createAccordionItem("HIGH SEVERITY ISSUES", high, 'high') +
-                        createAccordionItem("MEDIUM/LOW ISSUES", medium, 'medium') +
-                        createAccordionItem("GAS OPTIMIZATIONS", gas, 'gas') +
-                        createAccordionItem("BEST PRACTICES", best, 'best');
+                        createAccordionItem("CRITICAL VULNERABILITIES", parseListToHTML(report.critical), 'critical') +
+                        createAccordionItem("HIGH SEVERITY ISSUES", parseListToHTML(report.high), 'high') +
+                        createAccordionItem("MEDIUM/LOW ISSUES", parseListToHTML(report.medium), 'medium') +
+                        createAccordionItem("GAS OPTIMIZATIONS", parseListToHTML(report.gas), 'gas') +
+                        createAccordionItem("BEST PRACTICES", parseListToHTML(report.practices), 'best');
 
                     results.classList.remove('hidden');
                     setTimeout(() => results.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
@@ -319,6 +306,7 @@
                 console.error(error);
                 alert("Connection Error. Ensure Backend is running.");
             } finally {
+                // Reset State
                 btn.disabled = false;
                 document.getElementById('btnText').classList.remove('opacity-0');
                 loader.classList.add('hidden');
