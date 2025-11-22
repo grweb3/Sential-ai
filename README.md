@@ -213,27 +213,6 @@ Inside `backend/ai/analyze.js`, Sential automatically switches models if rate-li
 
 ---
 
-# 📂 Project Structure
-
-```
-blockvia-sential/
-├── backend/
-│   ├── ai/
-│   │   └── analyze.js       # AI Logic
-│   ├── index.js             # Server Entry
-│   └── node_modules/
-├── frontend/
-│   ├── index.html           # UI
-│   ├── logo.png
-│   └── video-bg.mp4
-├── .env                     # Environment Variables (ignored)
-├── .gitignore
-├── package.json
-└── README.md
-```
-
----
-
 # 🤝 Contributing
 
 We welcome contributions!
