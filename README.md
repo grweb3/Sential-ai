@@ -24,11 +24,11 @@
 
 🟣 Overview
 
-Sential AI is an intelligent "pre-flight check" tool for Web3 developers. It leverages advanced LLMs (Google Gemini 1.5 Pro) to perform instant, automated security audits on Solidity smart contracts.
+Sential AI (v1.0) is an intelligent "pre-flight check" tool designed for Web3 developers. Developed by BlockVIA, this tool leverages advanced LLMs (Google Gemini 1.5 Pro) to perform instant, automated security audits on Solidity smart contracts.
 
-Before sending code to a human auditor or deploying to mainnet, Sential provides a comprehensive analysis covering critical vulnerabilities, gas optimizations, and code quality standards.
+This version is completely free and open source. We believe basic security tooling should be accessible to every developer building the decentralized future.
 
-🚀 Why Sential?
+🚀 Why Sential v1.0?
 
 Speed: Get a full audit report in under 10 seconds.
 
@@ -38,7 +38,51 @@ Depth: Analyzes logic, not just syntax.
 
 Education: Explains why a vulnerability is dangerous and how to fix it.
 
-✨ Features
+🔮 Future Roadmap (v2.0)
+
+While Sential v1.0 provides essential protection for individual developers, BlockVIA is currently engineering the next evolution of blockchain security.
+
+Sential Pro (v2.0) is currently in development. It will be a comprehensive, enterprise-grade platform designed for protocols and institutions.
+
+Feature
+
+Sential v1.0 (Current)
+
+Sential Pro (Upcoming)
+
+Access
+
+Free & Open Source
+
+Paid / Subscription
+
+Engine
+
+Gemini 1.5 Pro
+
+Multi-Model Ensemble (Claude + GPT-4 + Llama 3)
+
+Analysis
+
+Single Contract
+
+Full Repo & Dependency Analysis
+
+Context
+
+1 Million Tokens
+
+Infinite Context (RAG Architecture)
+
+Tools
+
+Static Analysis
+
+Symbolic Execution + Formal Verification
+
+Sential v1.0 will remain free forever. The upcoming v2.0 will set a new standard for automated auditing.
+
+✨ Features (v1.0)
 
 Feature
 
@@ -82,8 +126,8 @@ Follow these steps to run Sential AI on your local machine.
 
 1. Clone the Repository
 
-git clone [https://github.com/grweb3/sential-ai.git](https://github.com/grweb3/sential-ai.git)
-cd blockvia-sential
+git clone [https://github.com/grweb3/Sential-ai.git](https://github.com/grweb3/Sential-ai.git)
+cd sential-ai
 
 
 2. Install Dependencies
@@ -134,7 +178,13 @@ Response:
 {
   "success": true,
   "modelUsed": "gemini-1.5-pro",
-  "analysis": "## CRITICAL VULNERABILITIES\n\nNone found..."
+  "analysis": {
+    "auditReport": {
+      "score": 8.5,
+      "critical": [],
+      "high": []
+    }
+  }
 }
 
 
@@ -144,11 +194,11 @@ Smart Model Fallback
 
 Sential implements a robust fallback system in backend/ai/analyze.js. If the primary model is overloaded or rate-limited, it automatically retries with the next available model in this order:
 
-gemini-1.5-pro (Highest Intelligence)
+gemini-2.0-flash-exp (Experimental / High Speed)
 
-gemini-1.5-flash (Fastest Response)
+gemini-1.5-flash (Stable)
 
-gemini-pro (Legacy Fallback)
+gemini-1.5-pro (High Intelligence)
 
 API Key Protection
 
@@ -157,7 +207,6 @@ API keys are stored strictly in server-side environment variables.
 The frontend never sees the API key.
 
 Rate limiting is handled via the backend.
-
 
 🤝 Contributing
 
