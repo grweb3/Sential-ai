@@ -2,8 +2,6 @@
 <!-- Replace with your actual logo URL if hosted, or relative path -->
 <img src="frontend/logo.png" alt="Sential AI Logo" width="120" height="120" />
 
-<h1>SENTIAL AI</h1>
-
 <p>
 <strong>The Essential Guardian for Smart Contract Code.</strong>
 </p>
