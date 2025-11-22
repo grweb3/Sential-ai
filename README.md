@@ -20,174 +20,166 @@
 </p>
 </div>
 
->
+---
 
-🟣 Overview
+# 🟣 **Sential AI — v1.0**
 
-Sential AI (v1.0) is an intelligent "pre-flight check" tool designed for Web3 developers. Developed by BlockVIA, this tool leverages advanced LLMs (Google Gemini 1.5 Pro) to perform instant, automated security audits on Solidity smart contracts.
+### *Instant Smart Contract Pre-Flight Security Checks (Free & Open Source)*
 
-This version is completely free and open source. We believe basic security tooling should be accessible to every developer building the decentralized future.
+Sential AI (v1.0) is an intelligent **“pre-flight check”** tool designed for Web3 developers.
+Powered by **Google Gemini 1.5 Pro**, it performs instant, automated audits of Solidity smart contracts.
 
-🚀 Why Sential v1.0?
+Built by **BlockVIA**, this version is **100% free & open source** — because basic security should be available to every builder shaping the decentralized future.
 
-Security shouldn't be a luxury. We built Sential v1.0 to be the standard "Pre-Flight Check" for the Web3 ecosystem.
+---
 
-Core Philosophy
+# 🚀 Why Sential v1.0?
 
-Impact
+Security shouldn’t be a luxury.
 
-🛡️ Democratizing Trust
+Sential v1.0 is built with one core mission:
 
-We believe basic security tooling should be free and accessible to every builder, from hackathon devs to founders.
+> **Make high-quality security guidance accessible to every Web3 developer.**
 
-⚡ Instant Feedback
+---
 
-Waiting weeks for an audit kills momentum. Sential gives you answers in seconds.
+## 🧭 Core Philosophy
 
-🧠 Logic over Syntax
+### 🛡️ **Democratizing Trust**
 
-Unlike basic linters, Sential analyzes the intent of your code to find logical flaws.
+Security tools should be free and accessible — from hackathon devs to founders.
 
-📚 Developer Growth
+### ⚡ **Instant Feedback**
 
-We don't just find bugs; every report explains why they happen so you become a better Solidity developer.
-🔮 Future Roadmap (v2.0)
+Waiting weeks for an audit kills momentum.
+Sential gives actionable insights **in seconds**, not days.
 
-While Sential v1.0 provides essential protection for individual developers, BlockVIA is currently engineering the next evolution of blockchain security.
+### 🧠 **Logic Over Syntax**
 
-Sential Pro (v2.0) is currently in development. It will be a comprehensive, enterprise-grade platform designed for protocols and institutions.
+It's not a linter.
+Sential understands the **intent** of your code to detect logical flaws.
 
-Feature
+### 📚 **Grow as a Developer**
 
-Sential v1.0 (Current)
+Every audit includes explanations that help you become a stronger Solidity engineer.
 
-Sential Pro (Upcoming)
+---
 
-Access
+# 🔮 Future Roadmap — Sential Pro (v2.0)
 
-Free & Open Source
+BlockVIA is building a next-generation, enterprise-grade automated auditor.
 
-Paid / Subscription
+| Feature      | Sential v1.0 (Current) | Sential Pro (Upcoming)                   |
+| ------------ | ---------------------- | ---------------------------------------- |
+| **Access**   | Free & Open Source     | Paid / Subscription                      |
+| **Engine**   | Gemini 1.5 Pro         | Claude + GPT-4 + Llama 3 Ensemble        |
+| **Analysis** | Single Contract        | Full Repo / Dependency Graphs            |
+| **Context**  | 1M Tokens              | Infinite Context (RAG + Vector DB)       |
+| **Tools**    | Static Analysis        | Symbolic Execution + Formal Verification |
 
-Engine
+✨ **Sential v1.0 will always remain free.**
+🔥 **Sential Pro v2.0 will redefine automated auditing.**
 
-Gemini 1.5 Pro
+---
 
-Multi-Model Ensemble (Claude + GPT-4 + Llama 3)
+# ✨ Features (v1.0)
 
-Analysis
+| Feature                      | Description                                                                     |
+| ---------------------------- | ------------------------------------------------------------------------------- |
+| 🔴 **Critical Detection**    | Detects reentrancy, overflow/underflow, access-control flaws, and logic errors. |
+| 💰 **Gas Optimization**      | Suggests improvements to reduce gas usage.                                      |
+| 📝 **Auto-Documentation**    | Generates or validates NatSpec comments.                                        |
+| 📊 **Security Score**        | Rates contracts 0–10 based on risk factors.                                     |
+| 🤖 **Smart Fallback System** | Automatically retries with Flash → Pro models for stability.                    |
 
-Single Contract
+---
 
-Full Repo & Dependency Analysis
+# 🛠 Tech Stack
 
-Context
+* **Frontend:** Vanilla JS, HTML5, TailwindCSS (CDN)
+* **Backend:** Node.js, Express
+* **AI Engine:** Google Gemini 1.5 Pro & Flash
+* **Deployment:** Render (Web Service)
+* **Markdown Rendering:** Marked.js
 
-1 Million Tokens
+---
 
-Infinite Context (RAG Architecture)
+# ⚡ Installation (Local)
 
-Tools
+Follow these steps to run Sential AI locally.
 
-Static Analysis
+---
 
-Symbolic Execution + Formal Verification
+## **1. Clone the Repository**
 
-Sential v1.0 will remain free forever. The upcoming v2.0 will set a new standard for automated auditing.
-
-✨ Features (v1.0)
-
-Feature
-
-Description
-
-🔴 Critical Detection
-
-Identifies reentrancy, overflow/underflow, and access control exploits.
-
-💰 Gas Optimization
-
-Suggests code changes to reduce deployment and execution costs.
-
-📝 Auto-Documentation
-
-Checks for and generates NatSpec comments for better readability.
-
-📊 Security Score
-
-Assigns a 0-10 score based on code quality and risk factors.
-
-🤖 Smart Fallback
-
-Automatically switches between AI models (Pro → Flash) to ensure uptime.
-
-🛠️ Tech Stack
-
-Frontend: Vanilla JS, HTML5, Tailwind CSS (CDN).
-
-Backend: Node.js, Express.
-
-AI Engine: Google Gemini 1.5 Pro & Flash.
-
-Deployment: Render (Web Service).
-
-Formatting: Marked.js (Markdown parsing).
-
-⚡ Installation (Local)
-
-Follow these steps to run Sential AI on your local machine.
-
-1. Clone the Repository
-
-git clone [https://github.com/grweb3/Sential-ai.git](https://github.com/grweb3/Sential-ai.git)
+```bash
+git clone https://github.com/grweb3/Sential-ai
 cd sential-ai
+```
 
+---
 
-2. Install Dependencies
+## **2. Install Backend Dependencies**
 
-Sential runs as a monorepo structure. Install dependencies in the backend folder.
+Navigate into the backend folder:
 
+```bash
+cd backend
 npm install
+```
 
+---
 
-3. Configure Environment
+## **3. Configure Environment**
 
-Create a .env file in the root directory:
+Create a `.env` file inside **backend/**:
 
+```bash
 touch .env
+```
 
+Add:
 
-Add your API keys (Get one from Google AI Studio):
-
+```
 PORT=5000
 GEMINI_API_KEY=your_actual_google_api_key_here
+```
 
+Get your key from **Google AI Studio**.
 
-4. Run the Server
+---
 
+## **4. Run the Server**
+
+```bash
 npm start
+```
 
+Your server will run at:
 
-The server will start at http://localhost:5000.
-Open your browser and navigate to that URL to verify.
+```
+http://localhost:5000
+```
 
-📖 API Reference
+---
 
-Sential exposes a single, powerful endpoint for analysis.
+# 📖 API Reference
 
-POST /api/analyze
+### **POST /api/analyze**
 
-Analyzes a provided smart contract string.
+Analyze a Solidity smart contract string.
 
-Request Body:
+#### **Request Body**
 
+```json
 {
   "contractCode": "pragma solidity ^0.8.0; contract Example { ... }"
 }
+```
 
+#### **Response**
 
-Response:
-
+```json
 {
   "success": true,
   "modelUsed": "gemini-1.5-pro",
@@ -199,47 +191,83 @@ Response:
     }
   }
 }
+```
 
+---
 
-🛡️ Security Architecture
+# 🛡 Security Architecture
 
-Smart Model Fallback
+### **Smart Model Fallback**
 
-Sential implements a robust fallback system in backend/ai/analyze.js. If the primary model is overloaded or rate-limited, it automatically retries with the next available model in this order:
+Inside `backend/ai/analyze.js`, Sential automatically switches models if rate-limited:
 
-gemini-2.0-flash-exp (Experimental / High Speed)
+1. `gemini-2.0-flash-exp` (Fastest)
+2. `gemini-1.5-flash`
+3. `gemini-1.5-pro` (Deepest reasoning)
 
-gemini-1.5-flash (Stable)
+### **API Key Protection**
 
-gemini-1.5-pro (High Intelligence)
+* Keys are **server-only** (never sent to frontend)
+* Environment variables via `.env`
+* Rate limiting done server-side
 
-API Key Protection
+---
 
-API keys are stored strictly in server-side environment variables.
+# 📂 Project Structure
 
-The frontend never sees the API key.
+```
+blockvia-sential/
+├── backend/
+│   ├── ai/
+│   │   └── analyze.js       # AI Logic
+│   ├── index.js             # Server Entry
+│   └── node_modules/
+├── frontend/
+│   ├── index.html           # UI
+│   ├── logo.png
+│   └── video-bg.mp4
+├── .env                     # Environment Variables (ignored)
+├── .gitignore
+├── package.json
+└── README.md
+```
 
-Rate limiting is handled via the backend.
+---
 
-🤝 Contributing
+# 🤝 Contributing
 
-We welcome contributions! Please follow these steps:
+We welcome contributions!
 
-Fork the project.
+1. **Fork** the repo
+2. **Create a branch**
 
-Create your feature branch (git checkout -b feature/AmazingFeature).
+   ```bash
+   git checkout -b feature/AmazingFeature
+   ```
+3. **Commit**
 
-Commit your changes (git commit -m 'Add some AmazingFeature').
+   ```bash
+   git commit -m "Add AmazingFeature"
+   ```
+4. **Push**
 
-Push to the branch (git push origin feature/AmazingFeature).
+   ```bash
+   git push origin feature/AmazingFeature
+   ```
+5. **Open a Pull Request**
 
-Open a Pull Request.
+---
 
-📄 License
+# 📄 License
 
-Distributed under the MIT License. See LICENSE for more information.
+Distributed under the MIT License.
+See the `LICENSE` file for details.
+
+---
 
 <div align="center">
-<p>Built with ❤️ by <a href="https://blockvia.xyz">BlockVIA</a></p>
-<p><em>"Redefining trust in blockchain."</em></p>
+  <p>Built with ❤️ by <a href="https://blockvia.xyz">BlockVIA</a></p>
+  <em>"Redefining trust in blockchain."</em>
 </div>
+
+---
