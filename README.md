@@ -20,6 +20,8 @@
 </p>
 </div>
 
+>
+
 🟣 Overview
 
 Sential AI (v1.0) is an intelligent "pre-flight check" tool designed for Web3 developers. Developed by BlockVIA, this tool leverages advanced LLMs (Google Gemini 1.5 Pro) to perform instant, automated security audits on Solidity smart contracts.
@@ -28,13 +30,27 @@ This version is completely free and open source. We believe basic security tooli
 
 🚀 Why Sential v1.0?
 
-Speed: Get a full audit report in under 10 seconds.
+Security shouldn't be a luxury. We built Sential v1.0 to be the standard "Pre-Flight Check" for the Web3 ecosystem.
 
-Cost: 100% Free (Powered by Gemini Free Tier).
+Core Philosophy
 
-Depth: Analyzes logic, not just syntax.
+Impact
 
-Education: Explains why a vulnerability is dangerous and how to fix it.
+🛡️ Democratizing Trust
+
+We believe basic security tooling should be free and accessible to every builder, from hackathon devs to founders.
+
+⚡ Instant Feedback
+
+Waiting weeks for an audit kills momentum. Sential gives you answers in seconds.
+
+🧠 Logic over Syntax
+
+Unlike basic linters, Sential analyzes the intent of your code to find logical flaws.
+
+📚 Developer Growth
+
+We don't just find bugs; every report explains why they happen so you become a better Solidity developer.
 
 🔮 Future Roadmap (v2.0)
 
