@@ -51,7 +51,6 @@ Unlike basic linters, Sential analyzes the intent of your code to find logical f
 📚 Developer Growth
 
 We don't just find bugs; every report explains why they happen so you become a better Solidity developer.
-
 🔮 Future Roadmap (v2.0)
 
 While Sential v1.0 provides essential protection for individual developers, BlockVIA is currently engineering the next evolution of blockchain security.
