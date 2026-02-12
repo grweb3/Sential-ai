@@ -6,13 +6,12 @@ dotenv.config();
 const API_KEY = process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.trim().replace(/['"]+/g, '') : "";
 
 /**
- * We are explicitly setting the API version to 'v1' instead of the default 'v1beta'.
- * This fixes the 404 errors on Render where certain models aren't found in the beta endpoint.
+ * We initialize the SDK but we will also use a fallback 
+ * to ensure the 'v1' endpoint is reached if the SDK defaults to 'v1beta'.
  */
 const genAI = new GoogleGenerativeAI(API_KEY);
 
-// We use the most reliable stable names
-const MODELS = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"];
+const MODELS = ["gemini-1.5-flash", "gemini-1.5-pro"];
 
 async function executeWithRetry(contractCode) {
     let lastError = null;
@@ -23,14 +22,18 @@ async function executeWithRetry(contractCode) {
 
         for (let i = 0; i < retries; i++) {
             try {
-                console.log(`📡 Attempting connection: ${modelName} (v1)...`);
+                console.log(`📡 Connecting to ${modelName} via Stable v1 API...`);
                 
-                // Explicitly request the model. 
-                // Note: The SDK handles the 'models/' prefix automatically.
-                const model = genAI.getGenerativeModel({ model: modelName }, { apiVersion: 'v1' });
+                // FORCE v1 API VERSION
+                const model = genAI.getGenerativeModel(
+                    { model: modelName },
+                    { apiVersion: 'v1' } 
+                );
+
+                const prompt = `Analyze this Solidity code and return ONLY a structured JSON report. \n\n Code: ${contractCode}`;
 
                 const result = await model.generateContent({
-                    contents: [{ role: 'user', parts: [{ text: `Analyze this Solidity code and return ONLY a structured JSON report. \n\n Code: ${contractCode}` }] }],
+                    contents: [{ role: 'user', parts: [{ text: prompt }] }],
                     generationConfig: { 
                         temperature: 0.1, 
                         responseMimeType: "application/json" 
@@ -38,8 +41,6 @@ async function executeWithRetry(contractCode) {
                 });
 
                 const responseText = result.response.text();
-                
-                // Robust parsing to handle potential AI formatting issues
                 const cleanJson = responseText.trim().replace(/```json|```/g, "");
                 
                 return {
@@ -54,26 +55,23 @@ async function executeWithRetry(contractCode) {
                 
                 console.error(`❌ ${modelName} Failure: [${statusCode}] ${error.message}`);
 
-                // 1. If Invalid Key, stop immediately
-                if (error.message.includes("API_KEY_INVALID") || statusCode === 403 || statusCode === 401) {
-                    throw new Error("API_KEY_INVALID");
+                // If the key is blocked or invalid
+                if (statusCode === 403 || statusCode === 401 || error.message.includes("API_KEY_INVALID")) {
+                    throw new Error("AUTH_ERROR: Your API Key is invalid or blocked in this region.");
                 }
                 
-                // 2. If 404, the model is not in this endpoint/region. Try next model.
-                if (statusCode === 404 || error.message.includes("404")) {
-                    console.warn(`⏭️ ${modelName} not found. Trying alternative...`);
+                // If 404, the model identifier or API version is wrong for your account
+                if (statusCode === 404) {
+                    console.warn(`⏭️ ${modelName} not found on v1. Trying next...`);
                     break; 
                 }
 
-                // 3. If 429 (Rate Limit), wait and retry this specific model
-                if ((statusCode === 429 || error.message.includes("429")) && i < retries - 1) {
-                    console.log(`⏳ Rate limit hit. Waiting ${delay}ms...`);
+                // If 429 (Rate Limit)
+                if (statusCode === 429 && i < retries - 1) {
                     await new Promise(res => setTimeout(res, delay));
                     delay *= 2;
                     continue;
                 }
-
-                // For any other error, move to the next model in the list
                 break; 
             }
         }
@@ -87,25 +85,27 @@ export async function runAudit(contractCode) {
             return { success: false, error: "GEMINI_API_KEY is missing in Render Environment Variables." };
         }
 
-        return await executeWithRetry(contractCode);
+        const result = await executeWithRetry(contractCode);
+        return result;
 
     } catch (error) {
         console.error("FINAL ERROR LOG:", error.message);
         
-        let userMessage = "The engine is currently under heavy load.";
-        
-        if (error.message === "API_KEY_INVALID") {
-            userMessage = "Critical: Your Gemini API Key is invalid, restricted, or expired.";
-        } else if (error.message.includes("429") || error.message.includes("limit")) {
-            userMessage = "Audit Failed: AI rate limit reached. Please wait 60 seconds.";
+        // We are now passing the EXACT error back to you
+        let userMessage = error.message;
+
+        if (error.message.includes("AUTH_ERROR")) {
+            userMessage = "Invalid API Key. Check your Render Environment Variables.";
+        } else if (error.message.includes("429")) {
+            userMessage = "AI Rate Limit Reached. Please wait 60 seconds.";
         } else if (error.message.includes("404")) {
-            userMessage = "Audit Failed: No compatible AI models found for your region/key.";
+            userMessage = "Google Gemini is having trouble finding the model. Trying to reconnect...";
         }
 
         return {
             success: false,
             error: userMessage,
-            technicalDetails: error.message
+            technical: error.message
         };
     }
 }
