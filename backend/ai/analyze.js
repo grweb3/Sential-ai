@@ -2,38 +2,33 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
 dotenv.config();
 
-// Sanitize API Key to remove potential whitespace/quotes from Render/Env
+// 1. CLEAN THE API KEY
+// Removes any accidental spaces or quotes from Render/GitHub secrets
 const API_KEY = process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.trim().replace(/['"]+/g, '') : "";
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 /**
- * THE MODEL HIERARCHY
- * We try these in order. If one 404s or 429s, we hop to the next.
+ * MODEL HIERARCHY
+ * If the primary model fails or isn't available in your region, it hops to the next.
  */
-const MODELS_TO_TRY = [
-    "gemini-1.5-flash", 
-    "gemini-1.5-pro", 
-    "gemini-1.5-flash-8b",
-    "gemini-1.0-pro"
-];
+const MODELS = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-1.5-flash-8b"];
 
 /**
- * ADVANCED RETRY & HOP LOGIC
- * Handles 429 (Rate Limit), 503 (Overloaded), and 404 (Model Mismatch)
+ * SMART EXECUTION ENGINE
+ * Handles retries for traffic (429) and model-hopping for 404s.
  */
-async function smartAuditExecution(contractCode) {
+async function executeWithRetry(contractCode) {
     let lastError = null;
 
-    for (const modelName of MODELS_TO_TRY) {
+    for (const modelName of MODELS) {
         let retries = 3;
         let delay = 2000;
 
-        console.log(`🤖 Attempting Audit with: ${modelName}`);
-
         for (let i = 0; i < retries; i++) {
             try {
+                console.log(`🤖 Audit Attempt: ${modelName} (Try ${i + 1})`);
                 const model = genAI.getGenerativeModel({ model: modelName });
-                
+
                 const prompt = `
                     You are a professional Smart Contract Security Auditor.
                     Analyze the following Solidity code and return ONLY a structured JSON report.
@@ -64,62 +59,63 @@ async function smartAuditExecution(contractCode) {
                 });
 
                 const responseText = result.response.text();
+                // Strip any markdown the AI might have added
+                const cleanJson = responseText.trim().replace(/```json|```/g, "");
+                
                 return {
                     success: true,
-                    modelUsed: modelName,
-                    analysis: JSON.parse(responseText.trim().replace(/```json|```/g, ""))
+                    model: modelName,
+                    analysis: JSON.parse(cleanJson)
                 };
 
             } catch (error) {
                 lastError = error;
                 const status = error.status || (error.response ? error.response.status : null);
 
-                // If 404, this model is not available for this key/region. HOP to next model immediately.
+                // IF 404: The model doesn't exist for your key/region. SKIP to next model.
                 if (status === 404 || error.message?.includes("404")) {
-                    console.warn(`⚠️ ${modelName} not found (404). Hopping to next model...`);
+                    console.warn(`⚠️ ${modelName} 404 Not Found. Skipping...`);
                     break; 
                 }
 
-                // If 429 or 503, RETRY this specific model with backoff
+                // IF 429/503: Busy. WAIT and try again.
                 if ((status === 429 || status === 503) && i < retries - 1) {
-                    console.log(`[Traffic] ${modelName} busy, retrying in ${delay}ms...`);
+                    console.log(`[Traffic] ${modelName} busy, waiting ${delay}ms...`);
                     await new Promise(res => setTimeout(res, delay));
                     delay *= 2;
                     continue;
                 }
 
-                // If it's a different error or we're out of retries, break to try next model
-                break; 
+                // Any other error: try the next model
+                break;
             }
         }
     }
-
-    throw lastError || new Error("All AI models failed to respond.");
+    throw lastError;
 }
 
 export async function runAudit(contractCode) {
     try {
         if (!API_KEY) {
-            throw new Error("GEMINI_API_KEY is missing in Environment Variables.");
+            return { success: false, error: "GEMINI_API_KEY is missing. Check your environment variables." };
         }
 
-        return await smartAuditExecution(contractCode);
+        const result = await executeWithRetry(contractCode);
+        return result;
 
     } catch (error) {
-        console.error("CRITICAL AUDIT FAILURE:", error.message);
+        console.error("FINAL AUDIT ERROR:", error.message);
         
-        let friendlyMessage = "Audit Failed: All AI models are currently unavailable.";
+        let userMessage = "Audit Failed: The AI engine is currently over capacity.";
         
-        if (error.message?.includes("API key")) {
-            friendlyMessage = "Critical: Invalid API Key. Please check your Google AI Studio dashboard.";
-        } else if (error.message?.includes("429")) {
-            friendlyMessage = "High Traffic: Google's free tier limit reached. Please try again in 1 minute.";
+        if (error.message.includes("API key")) {
+            userMessage = "Invalid API Key. Please generate a new one in Google AI Studio.";
         }
 
         return {
             success: false,
-            error: friendlyMessage,
-            details: error.message
+            error: userMessage,
+            debug: error.message
         };
     }
 }
