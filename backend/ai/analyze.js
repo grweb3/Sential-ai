@@ -6,8 +6,8 @@ dotenv.config();
 const API_KEY = process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.trim().replace(/['"]+/g, '') : "";
 
 /**
- * We initialize the SDK but we will also use a fallback 
- * to ensure the 'v1' endpoint is reached if the SDK defaults to 'v1beta'.
+ * We initialize the SDK. 
+ * Removed responseMimeType from config as it was causing 400 Bad Request on certain v1 endpoints.
  */
 const genAI = new GoogleGenerativeAI(API_KEY);
 
@@ -24,24 +24,54 @@ async function executeWithRetry(contractCode) {
             try {
                 console.log(`📡 Connecting to ${modelName} via Stable v1 API...`);
                 
-                // FORCE v1 API VERSION
+                // Using v1 API version
                 const model = genAI.getGenerativeModel(
                     { model: modelName },
                     { apiVersion: 'v1' } 
                 );
 
-                const prompt = `Analyze this Solidity code and return ONLY a structured JSON report. \n\n Code: ${contractCode}`;
+                const prompt = `Analyze this Solidity code and return ONLY a structured JSON report. 
+                Do not include any conversational text, only the JSON object.
+                
+                The JSON MUST follow this exact structure:
+                {
+                  "auditReport": {
+                    "score": 0-10,
+                    "summary": "Brief overview",
+                    "critical": [{"title": "", "description": "", "recommendation": ""}],
+                    "high": [],
+                    "medium": [],
+                    "gas": [],
+                    "practices": []
+                  }
+                }
+
+                Code: 
+                ${contractCode}`;
 
                 const result = await model.generateContent({
                     contents: [{ role: 'user', parts: [{ text: prompt }] }],
                     generationConfig: { 
-                        temperature: 0.1, 
-                        responseMimeType: "application/json" 
+                        temperature: 0.1,
+                        // responseMimeType removed to fix 400 Bad Request error
                     },
                 });
 
                 const responseText = result.response.text();
-                const cleanJson = responseText.trim().replace(/```json|```/g, "");
+                
+                /**
+                 * Robust JSON Extraction
+                 * Since we removed responseMimeType, the AI might wrap the response in markdown.
+                 * We find the first '{' and last '}' to extract the raw JSON.
+                 */
+                const jsonStart = responseText.indexOf('{');
+                const jsonEnd = responseText.lastIndexOf('}') + 1;
+                
+                if (jsonStart === -1 || jsonEnd === 0) {
+                    throw new Error("AI failed to return a valid JSON structure.");
+                }
+
+                const cleanJson = responseText.substring(jsonStart, jsonEnd);
                 
                 return {
                     success: true,
@@ -91,7 +121,6 @@ export async function runAudit(contractCode) {
     } catch (error) {
         console.error("FINAL ERROR LOG:", error.message);
         
-        // We are now passing the EXACT error back to you
         let userMessage = error.message;
 
         if (error.message.includes("AUTH_ERROR")) {
@@ -100,6 +129,8 @@ export async function runAudit(contractCode) {
             userMessage = "AI Rate Limit Reached. Please wait 60 seconds.";
         } else if (error.message.includes("404")) {
             userMessage = "Google Gemini is having trouble finding the model. Trying to reconnect...";
+        } else if (error.message.includes("400")) {
+            userMessage = "The audit engine encountered a request error. Retrying with a different configuration...";
         }
 
         return {
