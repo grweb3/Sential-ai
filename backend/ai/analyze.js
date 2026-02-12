@@ -1,116 +1,78 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import dotenv from "dotenv";
+dotenv.config();
 
-// Priority order: Mix of Newest (Experimental) and Stable models
-const MODEL_PRIORITY = [
-  { name: "gemini-2.0-flash-exp", quota: "Experimental (High Rate Limit)" },
-  { name: "gemini-1.5-flash", quota: "Fast & Stable" },
-  { name: "gemini-1.5-pro", quota: "High Intelligence" },
-];
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Helper to strip markdown formatting (```json ... ```) from AI response
-function cleanAndParseJSON(text) {
-  try {
-    // 1. Try direct parse first
-    return JSON.parse(text);
-  } catch (e) {
-    // 2. If failed, strip markdown code fences
-    const clean = text.replace(/```json/g, "").replace(/```/g, "").trim();
-    try {
-      return JSON.parse(clean);
-    } catch (e2) {
-      console.error("JSON Parse Failed. Raw text:", text.substring(0, 100) + "...");
-      throw new Error("AI returned invalid JSON format");
+/**
+ * PRODUCTION-GRADE RETRY LOGIC
+ * This stops the "High Traffic" error by waiting and retrying automatically.
+ */
+async function retryWithBackoff(fn, retries = 4, delay = 2000) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            return await fn();
+        } catch (error) {
+            const status = error.status || (error.response ? error.response.status : null);
+            // 429 = Rate Limit, 503 = Overloaded
+            if ((status === 429 || status === 503) && i < retries - 1) {
+                console.log(`[RETRYING] Traffic high. Waiting ${delay}ms...`);
+                await new Promise(res => setTimeout(res, delay));
+                delay *= 2; // Wait longer each time
+                continue;
+            }
+            throw error;
+        }
     }
-  }
 }
 
-async function tryModelWithFallback(genAI, prompt, attemptedModels = []) {
-  for (const modelInfo of MODEL_PRIORITY) {
-    // Skip models we already failed on
-    if (attemptedModels.includes(modelInfo.name)) continue;
-
+export async function runAudit(contractCode) {
     try {
-      console.log(`🤖 Trying model: ${modelInfo.name}`);
-      const model = genAI.getGenerativeModel({ 
-        model: modelInfo.name,
-        generationConfig: { responseMimeType: "application/json" }
-      });
-      
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text();
+        // USE THE STABLE ID: gemini-1.5-flash
+        // gemini-2.0-flash-exp is experimental and often causes 404s
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-      if (!text) throw new Error("Empty response from AI");
+        const prompt = `
+            You are an expert Smart Contract Security Auditor.
+            Analyze the following Solidity code and return ONLY a JSON object.
+            
+            Schema:
+            {
+              "auditReport": {
+                "score": 0-10,
+                "summary": "...",
+                "critical": [], "high": [], "medium": [], "gas": [], "practices": []
+              }
+            }
 
-      // Use the robust parser
-      const jsonResponse = cleanAndParseJSON(text);
+            Code:
+            ${contractCode}
+        `;
 
-      console.log(`✅ Success with ${modelInfo.name}`);
-      return {
-        success: true,
-        analysis: jsonResponse,
-        modelUsed: modelInfo.name,
-      };
+        const responseText = await retryWithBackoff(async () => {
+            const result = await model.generateContent({
+                contents: [{ role: 'user', parts: [{ text: prompt }] }],
+                generationConfig: {
+                    temperature: 0.1,
+                    responseMimeType: "application/json",
+                },
+            });
+            return result.response.text();
+        });
+
+        return {
+            success: true,
+            analysis: JSON.parse(responseText.trim())
+        };
 
     } catch (error) {
-      console.log(`⚠️ ${modelInfo.name} failed: ${error.message}`);
-      attemptedModels.push(modelInfo.name);
-      
-      // If it's a rate limit (429), wait 1 second before trying next model
-      if (error.message.includes("429")) {
-        await new Promise(r => setTimeout(r, 1000));
-      }
+        console.error("ANALYSIS FAILED:", error.message);
+        let errorMsg = "Audit Failed. Please try again in 30 seconds.";
+        
+        if (error.message.includes("404")) {
+            errorMsg = "Critical: Model not found. Check if your API Key is valid.";
+        }
+        
+        return { success: false, error: errorMsg };
     }
-  }
-
-  // If we get here, all models failed
-  return {
-    success: false,
-    error: "High traffic. All AI models are currently busy. Please try again in 10 seconds.",
-  };
-}
-
-export async function runAudit(code) {
-  try {
-    if (!process.env.GEMINI_API_KEY) {
-      return { success: false, error: "Server Error: API Key missing" };
-    }
-
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-    const prompt = `
-    You are an elite Smart Contract Auditor. Analyze the following Solidity code.
-    
-    Your Task:
-    1. Identitfy Critical, High, and Medium severity vulnerabilities.
-    2. Suggest Gas Optimizations.
-    3. Evaluate Security Best Practices.
-    4. Assign a security score (0-10).
-    5. Write a brief executive summary.
-
-    RETURN ONLY A RAW JSON OBJECT. NO MARKDOWN.
-    
-    JSON Structure:
-    {
-      "auditReport": {
-        "critical": [ {"title": "Issue Title", "description": "Brief explanation", "recommendation": "How to fix"} ],
-        "high": [ {"title": "Issue Title", "description": "Brief explanation", "recommendation": "How to fix"} ],
-        "medium": [ {"title": "Issue Title", "description": "Brief explanation", "recommendation": "How to fix"} ],
-        "gas": [ {"title": "Optimization", "description": "How to save gas", "recommendation": "Code suggestion"} ],
-        "practices": [ {"title": "Good Practice", "description": "What is done well", "recommendation": "Keep it up"} ],
-        "summary": "A 2-sentence executive summary of the contract's security status.",
-        "score": 8.5
-      }
-    }
-
-    Contract Code:
-    ${code}
-    `;
-
-    return await tryModelWithFallback(genAI, prompt);
-
-  } catch (err) {
-    console.error("Audit Error:", err);
-    return { success: false, error: "Internal Audit Error: " + err.message };
-  }
 }
