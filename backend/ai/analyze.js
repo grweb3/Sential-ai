@@ -8,10 +8,15 @@ export async function runAudit(contractCode) {
     try {
         if (!API_KEY) return { success: false, error: "API Key missing in Render settings." };
 
-        console.log("📡 Sending RAW fetch request to Google Gemini (US Region check)...");
+        console.log("📡 Sending RAW fetch request to Google Gemini (Stable v1 check)...");
 
+        /**
+         * SWITCHED TO v1 ENDPOINT
+         * The 404 error was caused by gemini-1.5-flash not being found in the v1beta endpoint.
+         * Using the stable v1 endpoint is the reliable method for this model.
+         */
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
+            `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -35,8 +40,12 @@ export async function runAudit(contractCode) {
         if (!response.ok) {
             console.error("❌ Google API Error Detail:", JSON.stringify(data));
             
-            if (data.error?.message?.includes("location")) {
-                return { success: false, error: "GEOGRAPHIC BLOCK: Google Gemini is not available in your Render server's region. Change Render Region to Oregon (US West)." };
+            // Handle regional restrictions
+            if (data.error?.message?.toLowerCase().includes("location") || data.error?.status === "PERMISSION_DENIED") {
+                return { 
+                    success: false, 
+                    error: "GEOGRAPHIC BLOCK: Google Gemini is not available in your server's current region. Please change Render Region to Oregon (US West) or Ohio (US East)." 
+                };
             }
             
             throw new Error(data.error?.message || "Google API Rejected Request");
@@ -44,9 +53,18 @@ export async function runAudit(contractCode) {
 
         const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
         
-        // Extract JSON
+        if (!responseText) {
+            throw new Error("AI returned an empty response.");
+        }
+
+        // Extract JSON using robust bracket matching
         const jsonStart = responseText.indexOf('{');
         const jsonEnd = responseText.lastIndexOf('}') + 1;
+        
+        if (jsonStart === -1 || jsonEnd <= jsonStart) {
+            throw new Error("AI failed to return valid JSON format.");
+        }
+
         const cleanJson = responseText.substring(jsonStart, jsonEnd);
 
         return {
@@ -56,9 +74,15 @@ export async function runAudit(contractCode) {
 
     } catch (error) {
         console.error("FINAL ERROR LOG:", error.message);
+        
+        let errorMessage = error.message;
+        if (error.message.includes("fetch")) {
+            errorMessage = "Network Connection Error. Check Render internet connectivity.";
+        }
+
         return {
             success: false,
-            error: error.message.includes("fetch") ? "Connection Error" : error.message
+            error: errorMessage
         };
     }
 }
